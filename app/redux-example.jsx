@@ -2,7 +2,16 @@ var redux = require('redux');
 
 console.log('starting redux example');
 
-var reducer = (state = {name: 'anonymous'}, action) => {
+var stateDefault = {
+    name: 'anonymous',
+    hobbies: [],
+    movies: []
+};
+
+var newHobbyId = 1;
+var newMovieId = 1;
+
+var reducer = (state = stateDefault, action) => {
     // state = state || {name: 'Anonymous'};
         
     //check for the type of action
@@ -12,6 +21,39 @@ var reducer = (state = {name: 'anonymous'}, action) => {
                 //return new state
                 ...state,
                 name: action.name
+            };
+        case 'ADD_HOBBY' :
+            return {
+                ...state,
+                hobbies: [
+                ...state.hobbies,
+                {   
+                    id: newHobbyId++,
+                    hobby: action.hobby
+                }
+                ]
+            };
+        case 'REMOVE_HOBBY' :
+            return {
+                ...state,
+                hobbies: state.hobbies.filter((hobby) => hobby.id !== action.id)
+            };
+        case 'ADD_MOVIE' :
+            return {
+                ...state,
+                movies: [
+                ...state.movies,
+                {   
+                    id: newMovieId++,
+                    title: action.title,
+                    genre: action.genre
+                }
+                ]
+            };
+        case 'REMOVE_MOVIE' :
+            return {
+                ...state,
+                movies: state.movies.filter((movie) => movie.id !== action.id)
             };
         default:
             return state;
@@ -29,6 +71,8 @@ var unsubscribe = store.subscribe(() => {
     
     console.log('name is', state.name);
     document.getElementById('app').innerHTML = state.name;
+    
+    console.log('New state', store.getState());
 });
 
 //unsubscribe();
@@ -48,9 +92,43 @@ store.dispatch({
     name: 'Terence'
 });
 
+store.dispatch({
+    type: 'ADD_HOBBY',
+    hobby: 'Guitar playing'
+});
+
+store.dispatch({
+    type: 'ADD_HOBBY',
+    hobby: 'Walking'
+});
+
+store.dispatch({
+    type: 'REMOVE_HOBBY',
+    id: 2
+});
 
 // dispatch action to the store
 store.dispatch({
     type: 'CHANGE_NAME',
     name: 'Elizabeth'
 });
+
+// dispatch action to the store
+store.dispatch({
+    type: 'ADD_MOVIE',
+    title: 'Lord of the Rings',
+    genre: 'Drama'
+});
+
+// dispatch action to the store
+store.dispatch({
+    type: 'ADD_MOVIE',
+    title: 'Madea Christmas',
+    genre: 'Comedy'
+});
+
+store.dispatch({
+    type: 'REMOVE_MOVIE',
+    id: 1
+});
+

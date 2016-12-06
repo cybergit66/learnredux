@@ -11,7 +11,7 @@ var stateDefault = {
 var newHobbyId = 1;
 var newMovieId = 1;
 
-var reducer = (state = stateDefault, action) => {
+var old_reducer = (state = stateDefault, action) => {
     // state = state || {name: 'Anonymous'};
         
     //check for the type of action
@@ -59,6 +59,56 @@ var reducer = (state = stateDefault, action) => {
             return state;
     }
 };
+
+var nameReducer = (state = 'anonymous', action) => {
+    switch (action.type){
+        case 'CHANGE_NAME':
+            return action.name
+        default: 
+            return state;
+    };
+};
+
+var hobbiesReducer = (state = [], action) => {
+    switch (action.type) {
+        case 'ADD_HOBBY':
+            return [
+                ...state,
+                {   
+                    id: newHobbyId++,
+                    hobby: action.hobby
+                }
+            ];
+        case 'REMOVE_HOBBY':
+            return state.filter((hobby) => hobby.id !== action.id);
+        default:
+            return state;
+    }
+};
+
+var moviesReducer = (state = [], action) => {
+    switch (action.type) {
+        case 'ADD_MOVIE' :
+            return [
+                ...state,
+                {
+                    id: newMovieId++,
+                    title: action.title,
+                    genre: action.genre
+                }
+            ];
+        case 'REMOVE_MOVIE' :
+            return state.filter((movie) => movie.id !== action.id);
+        default: 
+            return state;
+    };
+};
+
+var reducer = redux.combineReducers({
+    name: nameReducer,
+    hobbies: hobbiesReducer,
+    movies: moviesReducer
+});
 
 var store = redux.createStore(reducer, redux.compose(
     // redux.compose allows middleware functions to be executed in application

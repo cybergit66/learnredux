@@ -11,8 +11,17 @@ var stateDefault = {
 
 // define the reducer as a pure function. it takes state and action
 var reducer = (state = stateDefault, action) => {
-    // state = state || {name: 'Anonymous'};
-    return state;
+    //check for the type of action
+    switch (action.type){
+        case 'CHANGE_SEARCHTEXT' : 
+            return {
+                //return new state
+                ...state,
+                searchText: action.searchText
+            };
+        default:
+            return state;
+    }
 };
 
 // create the store, pass in the reducer
@@ -23,3 +32,12 @@ var currentState = store.getState();
 
 // console log the current state of the application
 console.log('currentState', currentState);
+
+// action to change the searchText
+// dispatch action to the store
+store.dispatch({
+    type: 'CHANGE_SEARCHTEXT',
+    searchText: 'new search'
+});
+
+console.log('new search should be', store.getState());

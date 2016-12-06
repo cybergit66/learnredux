@@ -18,7 +18,20 @@ var reducer = (state = {name: 'anonymous'}, action) => {
     }
 };
 
-var store = redux.createStore(reducer);
+var store = redux.createStore(reducer, redux.compose(
+    // redux.compose allows middleware functions to be executed in application
+    window.devToolsExtension ? window.devToolsExtension() : f => f
+));
+
+// listen for changes on the state using the subscribe method
+var unsubscribe = store.subscribe(() => {
+    var state = store.getState();
+    
+    console.log('name is', state.name);
+    document.getElementById('app').innerHTML = state.name;
+});
+
+//unsubscribe();
 
 var currentState = store.getState();
 console.log('currentState', currentState);
@@ -35,4 +48,9 @@ store.dispatch({
     name: 'Terence'
 });
 
-console.log('name should be terence', store.getState());
+
+// dispatch action to the store
+store.dispatch({
+    type: 'CHANGE_NAME',
+    name: 'Elizabeth'
+});

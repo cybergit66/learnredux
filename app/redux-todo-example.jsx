@@ -25,7 +25,25 @@ var reducer = (state = stateDefault, action) => {
 };
 
 // create the store, pass in the reducer
-var store = redux.createStore(reducer);
+var store = redux.createStore(reducer, redux.compose(
+    // redux.compose allows middleware functions to be executed in application
+    window.devToolsExtension ? window.devToolsExtension() : f => f
+));
+
+// listen for changes on the state using the subscribe method
+var unsubscribe = store.subscribe(() => {
+    var state = store.getState();
+    
+    console.log('new search text is', state.searchText);
+    document.getElementById('app').innerHTML = state.searchText;
+});
+
+//unsubscribe();
+
+// listen for changes on the state using the subscribe method
+store.subscribe(() => {
+    var state = store.getState();
+});
 
 // getState fetches the current state of the application
 var currentState = store.getState();
@@ -40,4 +58,8 @@ store.dispatch({
     searchText: 'new search'
 });
 
-console.log('new search should be', store.getState());
+// dispatch action to the store
+store.dispatch({
+    type: 'CHANGE_SEARCHTEXT',
+    searchText: 'another search'
+});
